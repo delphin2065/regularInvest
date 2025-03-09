@@ -5,7 +5,7 @@ import datetime as dt
 import streamlit as st
 from matplotlib import pyplot as plt
 import matplotlib
-matplotlib.rc('font',family='Microsoft JhengHei')
+matplotlib.rc('font',family='SimHei')
 
 
 st.header('Regular Investment Plan 定期定額投資~~')
@@ -89,7 +89,7 @@ if btn:
     st.write(dfc)
 
 
-# print(matplotlib.rcParams['font.family'])
+print(matplotlib.rcParams['font.family'])
 if __name__ == '__main__':
     pass
     
