@@ -4,7 +4,10 @@ import yfinance as yf
 import datetime as dt
 import streamlit as st
 from matplotlib import pyplot as plt
-
+import matplotlib
+def plt_chinese():
+    plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei'] # 修改中文字體
+    plt.rcParams['axes.unicode_minus'] = False # 顯示負號
 
 st.header('Regular Investment Plan 定期定額投資~~')
 syb = st.text_input('Please Input The Stock ID', placeholder='0050.TW / 006201.TWO / SPY', value='006201.TWO')
@@ -73,12 +76,14 @@ if btn:
     bx.set_ylabel('Volume(W)')
     bx.grid(True)
     bx.set_yticks(volRng)
-    
+    plt_chinese()
+
     c1, c2, c3 = st.columns(3)
     c1.metric('cumPL',  dfc.loc[dfc.index[-1], 'cumPL'])
     c2.metric('totalShares', dfc.loc[:, 'shares'].sum())
     
     c3.metric('mDD', dfc['DrawDown'].min())
+
 
     st.pyplot(fig)    
     st.write(dfc)
