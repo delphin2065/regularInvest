@@ -4,7 +4,7 @@ import yfinance as yf
 import datetime as dt
 import streamlit as st
 from matplotlib import pyplot as plt
-import matplotlib.font_manager as fm
+from matplotlib.font_manager import FontProperties as font
 
 font1 = font(fname="/content/drive/MyDrive/Colab Notebooks/font/NotoSansTC-Regular.otf")
 
