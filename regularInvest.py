@@ -9,7 +9,6 @@ import matplotlib
 
 plt.rcParams['font.sans-serif']  = ['Taipei Sans TC Beta'] 
 
-
 st.header('Regular Investment Plan 定期定額投資~~')
 syb = st.text_input('Please Input The Stock ID', placeholder='0050.TW / 006201.TWO / SPY', value='006201.TWO')
 backDate = st.number_input('Please Input Back Date', step=100, min_value=300, value=1000)
