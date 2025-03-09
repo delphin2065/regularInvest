@@ -85,7 +85,7 @@ if btn:
     c3.metric('mDD', dfc['DrawDown'].min())
 
 
-    st.pyplot(fig)    
+    st.pyplot(plt)    
     st.write(dfc)
 
 if __name__ == '__main__':
