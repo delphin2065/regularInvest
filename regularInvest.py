@@ -4,10 +4,10 @@ import yfinance as yf
 import datetime as dt
 import streamlit as st
 from matplotlib import pyplot as plt
-import matplotlib
-def plt_chinese():
-    plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei'] # 修改中文字體
-    plt.rcParams['axes.unicode_minus'] = False # 顯示負號
+import matplotlib.font_manager as fm
+
+font1 = font(fname="/content/drive/MyDrive/Colab Notebooks/font/NotoSansTC-Regular.otf")
+
 
 st.header('Regular Investment Plan 定期定額投資~~')
 syb = st.text_input('Please Input The Stock ID', placeholder='0050.TW / 006201.TWO / SPY', value='006201.TWO')
@@ -65,7 +65,7 @@ if btn:
     ax = fig.add_subplot(2, 1, 1)
     ax.plot(dfc.index, dfc['cumPL'])
     ax.bar(dfc.index, dfc['DrawDown'], width=10, color='red')
-    ax.set_title(syb + '損益折線圖')
+    ax.set_title(syb + '損益折線圖', fontproperties=font1)
     ax.set_xticks(datRng)
     ax.set_ylabel('cumPL / DrawDown')
     ax.grid(True)
@@ -76,7 +76,7 @@ if btn:
     bx.set_ylabel('Volume(W)')
     bx.grid(True)
     bx.set_yticks(volRng)
-    plt_chinese()
+    
 
     c1, c2, c3 = st.columns(3)
     c1.metric('cumPL',  dfc.loc[dfc.index[-1], 'cumPL'])
