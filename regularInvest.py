@@ -6,7 +6,7 @@ import streamlit as st
 from matplotlib import pyplot as plt
 import matplotlib
 
-matplotlib.rcParams['font.sans-serif'] = ['Microsoft JhengHei'] 
+plt.rcParams['font.sans-serif']  = ['Microsoft JhengHei'] 
 
 
 st.header('Regular Investment Plan 定期定額投資~~')
