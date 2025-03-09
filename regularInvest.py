@@ -6,8 +6,7 @@ import streamlit as st
 from matplotlib import pyplot as plt
 import matplotlib
 
-
-matplotlib.rc('font', family='Microsoft JhengHei')
+matplotlib.rcParams['font.sans-serif'] = ['Microsoft JhengHei'] 
 
 
 st.header('Regular Investment Plan 定期定額投資~~')
@@ -91,7 +90,7 @@ if btn:
     st.write(dfc)
 
 
-print(matplotlib.rcParams['font.family'])
+
 if __name__ == '__main__':
     pass
     
