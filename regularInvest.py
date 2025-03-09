@@ -65,7 +65,7 @@ if btn:
     ax = fig.add_subplot(2, 1, 1)
     ax.plot(dfc.index, dfc['cumPL'])
     ax.bar(dfc.index, dfc['DrawDown'], width=10, color='red')
-    ax.set_title(syb)
+    ax.set_title(syb + '損益折線圖')
     ax.set_xticks(datRng)
     ax.set_ylabel('cumPL / DrawDown')
     ax.grid(True)
