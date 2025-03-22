@@ -9,13 +9,13 @@ import matplotlib
 plt.rcParams['font.sans-serif']  = ['Taipei Sans TC Beta'] 
 
 st.header('Regular Investment Plan 定期定額投資~~')
-syb = st.text_input('Please Input The Stock ID', placeholder='0050.TW / 006201.TWO / SPY', value='006201.TWO')
-backDate = st.number_input('Please Input Back Date', step=100, min_value=300, value=1000)
-regCapital = st.number_input('Please Input Regular Investment Amount', step=100, min_value=1000) 
-invDate = st.number_input('Please Input The Trading Date Of Each Month', step=1, min_value=1, value=5)
-tax = st.number_input('Please Input The Tax(%)', step=0.1, min_value=0.1425, value=0.1425, format="%.4f")
+syb = st.text_input('個股stock_id', placeholder='0050.TW / 006201.TWO / SPY', value='006201.TWO')
+backDate = st.number_input('回測天數', step=100, min_value=300, value=1000)
+regCapital = st.number_input('定期投入金額', step=100, min_value=1000) 
+invDate = st.number_input('每月第幾個交易日投入', step=1, min_value=1, value=5)
+tax = st.number_input('交易成本', step=0.1, min_value=0.1425, value=0.1425, format="%.4f")
 tax = tax*0.01
-btn = st.button('Back Test Execution')
+btn = st.button('回測執行')
 
 
 if btn:
