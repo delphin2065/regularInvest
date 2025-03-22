@@ -57,7 +57,7 @@ if btn:
     dfc.rename(columns={'Volume':'Volume(W)'}, inplace=True)
     dfc.iloc[:, 4:] = dfc.iloc[:, 4:].round(1)
     volRng = np.linspace(dfc['Volume(W)'].min(), dfc['Volume(W)'].max(), 3)
-    idxNum = np.linspace(0, dfc.shape[0]-1, 3).astype(int)
+    idxNum = np.linspace(0, dfc.shape[0]-1, 5).astype(int)
     datRng = [dfc.index[i] for i in idxNum]
 
     fig = plt.figure(figsize=(10, 8))
