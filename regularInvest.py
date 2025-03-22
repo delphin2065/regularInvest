@@ -84,6 +84,7 @@ if btn:
     
     c3.metric('mDD', dfc['DrawDown'].min())
 
+    dfc.rename(columns={'tax':'cost'}, inplace=True)
 
     st.write(fig)    
     st.write(dfc)
