@@ -9,7 +9,6 @@ import matplotlib
 plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'Arial Unicode MS', 'sans-serif']
 plt.rcParams['axes.unicode_minus'] = False  # 解決負號顯示問題
 
-
 st.header('Regular Investment Plan 定期定額投資~~')
 syb = st.text_input('個股stock_id', placeholder='0050.TW / 006201.TWO / SPY', value='006201.TWO')
 backDate = st.number_input('回測天數', step=100, min_value=300, value=1000)
