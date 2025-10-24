@@ -4,7 +4,7 @@ import yfinance as yf
 import datetime as dt
 import streamlit as st
 from matplotlib import pyplot as plt
-import matplotlib
+
 
 plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'Arial Unicode MS', 'sans-serif']
 plt.rcParams['axes.unicode_minus'] = False  # 解決負號顯示問題
