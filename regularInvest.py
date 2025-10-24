@@ -6,7 +6,8 @@ import streamlit as st
 from matplotlib import pyplot as plt
 import matplotlib
 
-plt.rcParams['font.sans-serif']  = ['Taipei Sans TC Beta'] 
+plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'Arial Unicode MS', 'sans-serif']
+plt.rcParams['axes.unicode_minus'] = False  # 解決負號顯示問題
 
 st.header('Regular Investment Plan 定期定額投資~~')
 syb = st.text_input('個股stock_id', placeholder='0050.TW / 006201.TWO / SPY', value='006201.TWO')
@@ -88,8 +89,8 @@ if btn:
 
     dfc.rename(columns={'tax':'cost'}, inplace=True)
 
-    st.write(fig)    
-    st.write(dfc)
+    st.pyplot(fig)  # 使用 st.pyplot(fig) 而不是 st.write(fig)
+    st.dataframe(dfc)  # 使用 st.dataframe 更適合顯示表格
 
 
 
