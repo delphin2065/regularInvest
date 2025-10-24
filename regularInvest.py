@@ -211,23 +211,23 @@ from matplotlib import pyplot as plt
 import matplotlib
 import matplotlib.font_manager as fm
 
-# 設定中文字體 - 適用於 Streamlit Cloud
-def setup_chinese_font():
-    # 嘗試使用 Noto Sans CJK（Streamlit Cloud 安裝的字體）
-    font_path = '/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc'
-    try:
-        # 如果字體檔案存在，註冊它
-        if fm.findfont(fm.FontProperties(family='sans-serif')) != fm.findfont(fm.FontProperties(family='Noto Sans CJK TC')):
-            plt.rcParams['font.sans-serif'] = ['Noto Sans CJK TC', 'Noto Sans CJK JP', 'sans-serif']
-        else:
-            plt.rcParams['font.sans-serif'] = ['Noto Sans CJK TC', 'sans-serif']
-    except:
-        # 備用方案
-        plt.rcParams['font.sans-serif'] = ['Noto Sans CJK TC', 'DejaVu Sans']
+# # 設定中文字體 - 適用於 Streamlit Cloud
+# def setup_chinese_font():
+#     # 嘗試使用 Noto Sans CJK（Streamlit Cloud 安裝的字體）
+#     font_path = '/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc'
+#     try:
+#         # 如果字體檔案存在，註冊它
+#         if fm.findfont(fm.FontProperties(family='sans-serif')) != fm.findfont(fm.FontProperties(family='Noto Sans CJK TC')):
+#             plt.rcParams['font.sans-serif'] = ['Noto Sans CJK TC', 'Noto Sans CJK JP', 'sans-serif']
+#         else:
+#             plt.rcParams['font.sans-serif'] = ['Noto Sans CJK TC', 'sans-serif']
+#     except:
+#         # 備用方案
+#         plt.rcParams['font.sans-serif'] = ['Noto Sans CJK TC', 'DejaVu Sans']
     
-    plt.rcParams['axes.unicode_minus'] = False
+#     plt.rcParams['axes.unicode_minus'] = False
 
-setup_chinese_font()
+# setup_chinese_font()
 
 st.header('Regular Investment Plan 定期定額投資~~')
 syb = st.text_input('個股stock_id', placeholder='0050.TW / 006201.TWO / SPY', value='006201.TWO')
@@ -279,8 +279,8 @@ if btn:
     idxNum = np.linspace(0, dfc.shape[0]-1, 5).astype(int)
     datRng = [dfc.index[i] for i in idxNum]
 
-    # 在繪圖前設定字體
-    setup_chinese_font()
+    # # 在繪圖前設定字體
+    # setup_chinese_font()
     
     fig = plt.figure(figsize=(10, 8))
     ax = fig.add_subplot(2, 1, 1)
