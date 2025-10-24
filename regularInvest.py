@@ -70,6 +70,8 @@ if btn:
     ax.grid(True)
 
 
+
+
     bx = fig.add_subplot(4, 1, 3)
     bx.bar(dfc.index, dfc['Volume(W)'], width=10, color='orange')
     bx.set_xticks(datRng)
