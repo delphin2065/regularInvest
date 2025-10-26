@@ -144,6 +144,7 @@ if btn:
     dff['進場日期'] = dff['進場日期'].dt.date
     dff.set_index('進場日期', inplace=True, drop=True)
     dff.rename(columns={'最近收盤價':str(dfc.index[dfc.shape[0]-1]) + ' 收盤價'}, inplace=True)  
+    
     st.pyplot(fig)  
     st.dataframe(dff,   use_container_width=True)  
 
