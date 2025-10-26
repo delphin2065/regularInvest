@@ -104,7 +104,7 @@ with col1:
 with col2:
     choiceEndDate = st.date_input('選擇結束日期', dt.datetime.now())
 
-regCapital = st.number_input('定期投入金額', step=100, min_value=100) 
+regCapital = st.number_input('定期投入金額', step=100, min_value=100, value=1000) 
 invDate = st.number_input('每月第幾個交易日投入', step=1, min_value=1, value=5)
 fee = st.number_input('交易成本', step=0.1, min_value=0.1425, value=0.1425, format="%.4f")
 fee = fee*0.01
