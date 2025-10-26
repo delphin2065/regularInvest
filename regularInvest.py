@@ -127,7 +127,7 @@ if btn:
     
 
     st.pyplot(fig)  
-    st.dataframe(dfc)  
+    st.dataframe(dfc,   use_container_width=True)  
 
 
 if __name__ == '__main__':
