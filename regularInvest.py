@@ -4,95 +4,130 @@ import yfinance as yf
 import datetime as dt
 import streamlit as st
 from matplotlib import pyplot as plt
-
+import warnings
+warnings.filterwarnings('ignore')
 
 plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'Arial Unicode MS', 'sans-serif']
 plt.rcParams['axes.unicode_minus'] = False  # 解決負號顯示問題
 
+class regularInvest:
+  def __init__(self, syb, endDate, startDate, fee, regCapital, invDate):
+    self.syb = syb
+    self.endDate = endDate
+    self.startDate = startDate
+    self.fee = fee
+    self.regCapital = regCapital
+    self.invDate = invDate
+    self.df = pd.DataFrame()
+    self.entryDate = None
+    self.entryPrice = None
+    self.entryShares = 0
+    self.tradeInfo = []
+    self.calcuateInfo = []
+    self.dfc = pd.DataFrame()
+
+  def get_df(self):
+    self.df = yf.Ticker(self.syb).history(start=self.startDate, end=self.endDate, auto_adjust=False)
+    self.df.index = pd.to_datetime(self.df.index.date)
+    self.df.index.name = 'Date'
+    self.df.reset_index(inplace=True, drop=False)
+    self.df.insert(1, 'Stock_ID', syb.upper())
+    self.df = self.df[['Date', 'Stock_ID', 'Open', 'Adj Close']]
+
+
+
+  def buy_shares(self):
+    self.get_df()
+    num = 0
+    cnt = 0
+    for index in range(1, self.df.shape[0]):
+      if self.df.loc[index, 'Date'].month == self.df.loc[index-1, 'Date'].month:
+        num = num + 1
+      else:
+        num = 1
+
+      if num == self.invDate:
+        cnt = cnt + 1
+        self.entryDate = self.df.loc[index, 'Date'].date()
+        self.entryPrice = self.df.loc[index, 'Open']
+        self.entryShares = int(regCapital / self.entryPrice)
+        self.tradeInfo.append((cnt, self.entryDate, self.entryPrice, self.entryShares))
+
+
+  def calulate_pl(self):
+    self.buy_shares()
+    for ind in self.tradeInfo:
+        ind_cnt = ind[0]
+        ind_date = ind[1]
+        ind_price = ind[2]
+        ind_shares = ind[3]
+        for index in range(self.df.shape[0]):
+            if self.df.loc[index, 'Date'].date() >= ind_date:
+                cal_date = self.df.loc[index, 'Date'].date()
+                cal_pl = (self.df.loc[index, 'Adj Close'] - ind_price * (1 + self.fee)) * ind_shares
+                self.calcuateInfo.append((cal_date, self.df.loc[index, 'Adj Close'], ind_shares, cal_pl))
+
+        self.dfc = pd.DataFrame(self.calcuateInfo, columns=['Date', self.syb.upper(), 'Shares', 'cumPL'])
+        self.dfc['Date'] = pd.to_datetime(self.dfc['Date'])
+        dfg_1 = self.dfc.groupby(['Date'])[[self.syb.upper()]].mean()
+        dfg_2 = self.dfc.groupby(['Date'])[['Shares', 'cumPL']].sum()
+        dfg_1.reset_index(inplace=True)
+        dfg_2.reset_index(inplace=True)
+        self.dfc = pd.merge(dfg_1, dfg_2, on='Date', how='left')
+        self.dfc['DrawDown'] = self.dfc['cumPL'] - np.maximum.accumulate(self.dfc['cumPL'])
+        
+    return self.dfc.round(2)
+
+
+
 
 st.header('Regular Investment Plan 定期定額投資~~')
 syb = st.text_input('個股stock_id', placeholder='0050.TW / 006201.TWO / SPY', value='006201.TWO')
-backDate = st.number_input('回測天數', step=100, min_value=300, value=1000)
+
+col1, col2 = st.columns(2)
+with col1:
+    choiceStartDate = st.date_input('選擇起始日期', dt.datetime.now() - dt.timedelta(days=1000))
+with col2:
+    choiceEndDate = st.date_input('選擇結束日期', dt.datetime.now())
+
 regCapital = st.number_input('定期投入金額', step=100, min_value=1000) 
 invDate = st.number_input('每月第幾個交易日投入', step=1, min_value=1, value=5)
-tax = st.number_input('交易成本', step=0.1, min_value=0.1425, value=0.1425, format="%.4f")
-tax = tax*0.01
+fee = st.number_input('交易成本', step=0.1, min_value=0.1425, value=0.1425, format="%.4f")
+fee = fee*0.01
 btn = st.button('回測執行')
 
 
 if btn:
-    endDate = dt.datetime.now()
-    startDate = endDate - dt.timedelta(days=backDate)
-
-
-
-    df = yf.Ticker(syb).history(start=startDate, end=endDate, auto_adjust=False)
-    df['tradeDate'] = df.groupby(df.index.to_period('M')).cumcount()+1
-    dff = df[df['tradeDate']==invDate][['Adj Close', 'Volume']].copy()
     
-    dff['tax'] = dff['Adj Close'] * tax
-    dff['shares'] = (regCapital/dff['Adj Close']).astype(int)
-    dff['cum_shares'] = dff['shares'].cumsum(axis=0)
-    dff['diff'] = dff['Adj Close'] - dff['Adj Close'].shift(1)
-    dff['PL'] = dff['shares'].shift(1) * (dff['diff'] - dff['Adj Close'].shift(1) * dff['tax'].shift(1)) + (dff['cum_shares'].shift(1) - dff['shares'].shift(1))* dff['diff']
-    dff['cumPL'] = dff['PL'].cumsum(axis=0)
-    dff['CapitalValue'] = dff['cum_shares']*dff['Adj Close']
-    
-    dff.index = dff.index.date
-    dff.index.name = 'Date'
-    dff.rename(columns={'Adj Close':syb}, inplace=True) 
-    dff['dd'] = np.nan
+    startDate = choiceStartDate
+    endDate = choiceEndDate
 
-    hh = 0
-    dd_list = []
-    arr = dff['cumPL'].to_numpy()
-    for i in range(dff.shape[0]):
-        if arr[i] >= hh:
-            hh = arr[i]
-            dd_list.append(0)
-        else:
-            dd_list.append(arr[i]-hh)
-    dff['DrawDown'] = dd_list
-    dfc = dff[[syb, 'Volume', 'tax', 'shares', 'PL', 'cumPL', 'CapitalValue', 'DrawDown']].copy()
-    
-    dfc['Volume'] =  dfc['Volume'] / 10000
-    dfc.rename(columns={'Volume':'Volume(W)'}, inplace=True)
-    dfc.iloc[:, 4:] = dfc.iloc[:, 4:].round(1)
-    volRng = np.linspace(dfc['Volume(W)'].min(), dfc['Volume(W)'].max(), 3)
-    idxNum = np.linspace(0, dfc.shape[0]-1, 5).astype(int)
-    datRng = [dfc.index[i] for i in idxNum]
+   
 
-    fig = plt.figure(figsize=(10, 8))
-    ax = fig.add_subplot(2, 1, 1)
-    ax.plot(dfc.index, dfc['cumPL'])
-    ax.bar(dfc.index, dfc['DrawDown'], width=10, color='red')
-    ax.set_title(syb + '損益折線圖')
-    ax.set_xticks(datRng)
-    ax.set_ylabel('cumPL / DrawDown')
-    ax.grid(True)
+    r = regularInvest(syb, endDate=endDate, startDate=startDate, fee=fee, regCapital=regCapital, invDate=invDate)
+    dfc = r.calulate_pl()
+    dfc['Date'] = dfc['Date'].dt.date
+    dfc.set_index('Date', inplace=True, drop=True)
 
-
-
-
-    bx = fig.add_subplot(4, 1, 3)
-    bx.bar(dfc.index, dfc['Volume(W)'], width=10, color='orange')
-    bx.set_xticks(datRng)
-    bx.set_ylabel('Volume(W)')
-    bx.grid(True)
-    bx.set_yticks(volRng)
-    
-
-    c1, c2, c3 = st.columns(3)
+    c1, c2, c3, c4 = st.columns(4)
     c1.metric('cumPL',  dfc.loc[dfc.index[-1], 'cumPL'])
-    c2.metric('totalShares', dfc.loc[:, 'shares'].sum())
+    c2.metric('totalShares', dfc.loc[dfc.index[-1], 'Shares'])
+    c3.metric('maxDrawDown', dfc['DrawDown'].min())
+    riskRewardRatio = (dfc.loc[dfc.index[-1], 'cumPL'] / abs(dfc['DrawDown'].min())).round(2) if dfc['DrawDown'].min() < 0 else 0
+    c4.metric('riskRewardRatio', riskRewardRatio)
+
+
+    fig = plt.figure(figsize=(5, 3))
+    ax = fig.add_subplot(1, 1, 1)
+    ax.plot(dfc.index, dfc['cumPL'])
+    ax.fill_between(dfc.index, dfc['DrawDown'], alpha=0.5, color='green')    
+    ax.grid(True)
+    ax.set_ylabel('cumPL / DrawDown')
+    ax.set_xticks([dfc.index[i] for i in np.linspace(0, dfc.shape[0]-1, 4).astype(int)])
     
-    c3.metric('mDD', dfc['DrawDown'].min())
 
-    dfc.rename(columns={'tax':'cost'}, inplace=True)
-
-    st.pyplot(fig)  # 使用 st.pyplot(fig) 而不是 st.write(fig)
-    st.dataframe(dfc)  # 使用 st.dataframe 更適合顯示表格
-
+    st.pyplot(fig)  
+    st.dataframe(dfc)  
 
 
 if __name__ == '__main__':
