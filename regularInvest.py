@@ -90,7 +90,7 @@ class regularInvest:
       cal_final_pl = (self.df.loc[self.df.shape[0]-1, 'Adj Close'] - ind_price * (1 + self.fee)) * ind_shares
       self.calcuateFinalInfo.append((ind_date, ind_cnt, ind_price, self.df.loc[self.df.shape[0]-1, 'Adj Close'], ind_shares, cal_fee, cal_final_pl))
 
-    self.dff = pd.DataFrame(self.calcuateFinalInfo, columns=['進場日期', '第n次買入', self.syb.upper(), '最近收盤價', '買入股數', '手續費', '進場後累積損益'])
+    self.dff = pd.DataFrame(self.calcuateFinalInfo, columns=['進場日期', '第n次買入', self.syb.upper() + '買入金額', '最近收盤價', '買入股數', '手續費', '進場後累積損益'])
     self.dff['進場日期'] = pd.to_datetime(self.dff['進場日期'])
     return self.dff.round(2)
 
