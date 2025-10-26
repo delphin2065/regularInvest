@@ -25,6 +25,7 @@ class regularInvest:
     self.tradeInfo = []
     self.calcuateInfo = []
     self.dfc = pd.DataFrame()
+    self.calcuateFinalInfo = []
 
   def get_df(self):
     self.df = yf.Ticker(self.syb).history(start=self.startDate, end=self.endDate, auto_adjust=False)
@@ -78,7 +79,20 @@ class regularInvest:
         
     return self.dfc.round(2)
 
+  def calculate_final_pl(self):
+    self.buy_shares()
+    for ind in self.tradeInfo:
+      ind_cnt = ind[0]
+      ind_date = ind[1]
+      ind_price = ind[2]
+      ind_shares = ind[3]
+      cal_fee = ind_price * self.fee * ind_shares
+      cal_final_pl = (self.df.loc[self.df.shape[0]-1, 'Adj Close'] - ind_price * (1 + self.fee)) * ind_shares
+      self.calcuateFinalInfo.append((ind_date, ind_cnt, ind_price, self.df.loc[self.df.shape[0]-1, 'Adj Close'], ind_shares, cal_fee, cal_final_pl))
 
+    self.dff = pd.DataFrame(self.calcuateFinalInfo, columns=['進場日期', '第n次買入', self.syb.upper(), '最近收盤價', '買入股數', '手續費', '進場後累積損益'])
+    self.dff['進場日期'] = pd.to_datetime(self.dff['進場日期'])
+    return self.dff.round(2)
 
 
 st.header('Regular Investment Plan 定期定額投資~~')
@@ -90,7 +104,7 @@ with col1:
 with col2:
     choiceEndDate = st.date_input('選擇結束日期', dt.datetime.now())
 
-regCapital = st.number_input('定期投入金額', step=100, min_value=1000) 
+regCapital = st.number_input('定期投入金額', step=100, min_value=100) 
 invDate = st.number_input('每月第幾個交易日投入', step=1, min_value=1, value=5)
 fee = st.number_input('交易成本', step=0.1, min_value=0.1425, value=0.1425, format="%.4f")
 fee = fee*0.01
@@ -126,9 +140,12 @@ if btn:
     ax.set_ylabel('cumPL / DrawDown')
     ax.set_xticks([dfc.index[i] for i in np.linspace(0, dfc.shape[0]-1, 4).astype(int)])
     
-
+    dff = r.calculate_final_pl()
+    dff['進場日期'] = dff['進場日期'].dt.date
+    dff.set_index('進場日期', inplace=True, drop=True)
+    dff.rename(columns={'最近收盤價':str(dfc.index[dfc.shape[0]-1]) + ' 收盤價'}, inplace=True)  
     st.pyplot(fig)  
-    st.dataframe(dfc.sort_index(ascending=False),   use_container_width=True)  
+    st.dataframe(dff,   use_container_width=True)  
 
 
 if __name__ == '__main__':
