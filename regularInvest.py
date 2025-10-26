@@ -108,6 +108,7 @@ if btn:
     dfc = r.calulate_pl()
     dfc['Date'] = dfc['Date'].dt.date
     dfc.set_index('Date', inplace=True, drop=True)
+    dfc.sort_index(inplace=True, ascending=False)
 
     c1, c2, c3, c4 = st.columns(4)
     c1.metric('cumPL',  dfc.loc[dfc.index[-1], 'cumPL'])
