@@ -145,6 +145,7 @@ if btn:
     dff.set_index('進場日期', inplace=True, drop=True)
     dff.rename(columns={'最近收盤價':str(dfc.index[dfc.shape[0]-1]) + ' 收盤價'}, inplace=True)  
     dff.drop_duplicates(inplace=True, keep='last')
+    dff.sort_index(inplace=True, ascending=False)
     st.pyplot(fig)  
     st.dataframe(dff,   use_container_width=True)  
 
